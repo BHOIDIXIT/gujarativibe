@@ -3,11 +3,11 @@
  * and quick player launcher.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Track, PlayerState } from '../types';
 import { formatTime } from './Player';
 import { HornButton } from './HornButton';
-import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1, Radio } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1, Radio, Eye, EyeOff } from 'lucide-react';
 
 interface HeroBannerProps {
   currentTrack: Track | null;
@@ -19,6 +19,8 @@ interface HeroBannerProps {
   onToggleShuffle?: () => void;
   onCycleRepeat?: () => void;
   onOpenShortcuts?: () => void;
+  isPlayerVisible?: boolean;
+  onTogglePlayerVisible?: () => void;
 }
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({
@@ -31,7 +33,12 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   onToggleShuffle,
   onCycleRepeat,
   onOpenShortcuts,
+  isPlayerVisible: propIsPlayerVisible,
+  onTogglePlayerVisible,
 }) => {
+  const [internalPlayerVisible, setInternalPlayerVisible] = useState(true);
+  const isVisible = propIsPlayerVisible !== undefined ? propIsPlayerVisible : internalPlayerVisible;
+  const toggleVisibility = onTogglePlayerVisible || (() => setInternalPlayerVisible(prev => !prev));
   const {
     isPlaying,
     isLoading,
@@ -94,11 +101,21 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
         </div>
       </header>
 
-      {/* Floating Glassmorphic Audio Player (Embedded directly over River Landscape - Exactly like screenshot) */}
-      <div className="w-full max-w-xl sm:max-w-2xl mt-4 sm:mt-6 px-2">
-        <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-3.5 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-left flex flex-col sm:flex-row items-center gap-4 sm:gap-6 transition-all hover:bg-white/15">
-          
-          {/* Thumbnail Image */}
+      {/* Floating Glassmorphic Audio Player (Toggleable Display - Enabled by default) */}
+      {isVisible ? (
+        <div className="w-full max-w-xl sm:max-w-2xl mt-4 sm:mt-6 px-2 translate-y-5 transition-all duration-300">
+          <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-3.5 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-left flex flex-col sm:flex-row items-center gap-4 sm:gap-6 transition-all hover:bg-white/15 group">
+            
+            {/* Quick Hide Toggle Button on Card */}
+            <button
+              onClick={toggleVisibility}
+              title="Hide Player Card"
+              className="absolute -top-2.5 -right-2.5 w-7 h-7 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-white/20 text-slate-300 hover:text-orange-400 flex items-center justify-center shadow-lg transition-all hover:scale-110 z-10"
+            >
+              <EyeOff className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Thumbnail Image */}
           <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-black shrink-0 border border-white/20 shadow-lg">
             {currentTrack ? (
               <img
@@ -220,6 +237,17 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
         </div>
       </div>
+      ) : (
+        <div className="w-full max-w-xl sm:max-w-2xl mt-4 sm:mt-6 px-2 translate-y-5 flex justify-center animate-fadeIn">
+          <button
+            onClick={toggleVisibility}
+            className="inline-flex items-center gap-2 bg-black/60 hover:bg-black/80 backdrop-blur-xl border border-orange-500/40 text-orange-300 hover:text-orange-100 px-5 py-2.5 rounded-2xl shadow-2xl font-gujarati text-sm transition-all hover:scale-105"
+          >
+            <Eye className="w-4 h-4 text-orange-400" />
+            <span>સંગીત પ્લેયર ડિસ્પ્લે ચાલુ કરો (Show Player Card)</span>
+          </button>
+        </div>
+      )}
 
     </div>
   );

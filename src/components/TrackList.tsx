@@ -51,42 +51,9 @@ export const TrackList: React.FC<TrackListProps> = ({
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 my-6 z-20 relative">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+      <div className="w-full flex flex-col bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl p-4 sm:p-6">
         
-        {/* Left Column (5 cols): Featured Now Playing Album Artwork Card */}
-        {currentTrack && (
-          <div className="lg:col-span-5 flex flex-col items-center justify-center py-2">
-            <div className="relative group w-full max-w-[340px]">
-              {/* Glowing ambient background blur */}
-              <div className="absolute -inset-4 bg-orange-500/20 rounded-2xl blur-xl group-hover:bg-orange-500/30 transition-all pointer-events-none" />
-              
-              {/* Album art frame */}
-              <div className="relative aspect-square w-full bg-[#1A1A1A] rounded-2xl overflow-hidden border-4 border-white/10 shadow-2xl group">
-                <img
-                  src={currentTrack.thumbnailUrl}
-                  alt={currentTrack.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                
-                {/* Gradient overlay with current track info */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-6">
-                  <span className="text-xs font-bold text-orange-400 uppercase tracking-widest block mb-1 font-sans">
-                    ● હવે વાગે છે (Now Playing)
-                  </span>
-                  <h2 className="text-2xl font-bold leading-tight text-white font-gujarati drop-shadow-md">
-                    {currentTrack.title}
-                  </h2>
-                  <p className="text-sm opacity-80 text-orange-100 font-gujarati mt-1">
-                    {currentTrack.artist}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Right Column (7 cols): Glass Playlist Container */}
-        <div className={`${currentTrack ? 'lg:col-span-7' : 'lg:col-span-12'} flex flex-col bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl p-4 sm:p-6`}>
+        {/* Header & Controls */}
           
           {/* Header & Controls */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
@@ -273,7 +240,6 @@ export const TrackList: React.FC<TrackListProps> = ({
               })}
           </div>
         </div>
-      </div>
     </div>
   );
 };

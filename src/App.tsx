@@ -11,7 +11,7 @@ import { TrackList } from './components/TrackList';
 import { Player } from './components/Player';
 import { KeyboardShortcutsModal } from './components/KeyboardShortcutsModal';
 import { playTruckHorn } from './utils/hornSound';
-import { Keyboard, Radio, Sparkles, Truck, ShieldAlert } from 'lucide-react';
+import { Keyboard, Radio, Sparkles, Truck, ShieldAlert, Eye, EyeOff, ListMusic, X } from 'lucide-react';
 
 export default function App() {
   const {
@@ -32,6 +32,8 @@ export default function App() {
   } = useYouTubePlayer();
 
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+  const [isPlayerVisible, setIsPlayerVisible] = useState(true);
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(true);
   const [currentTimeString, setCurrentTimeString] = useState<string>('');
   const trackListRef = useRef<HTMLDivElement>(null);
 
@@ -94,8 +96,16 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [togglePlayPause, seekTo, setVolume, toggleMute, playerState]);
 
-  const scrollToTrackList = () => {
-    trackListRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const togglePlaylist = () => {
+    setIsPlaylistOpen(prev => {
+      const nextState = !prev;
+      if (nextState) {
+        setTimeout(() => {
+          trackListRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+      return nextState;
+    });
   };
 
   return (
@@ -132,7 +142,42 @@ export default function App() {
           </div>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={togglePlaylist}
+              title={isPlaylistOpen ? "Hide Playlist" : "Show Playlist"}
+              className={`p-2 sm:px-3 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-gujarati backdrop-blur-md ${
+                isPlaylistOpen
+                  ? 'bg-orange-500/30 text-orange-200 border-orange-500/50 hover:bg-orange-500/40'
+                  : 'bg-black/40 text-slate-300 border-white/10 hover:text-white'
+              }`}
+            >
+              <ListMusic className="w-4 h-4 text-orange-400" />
+              <span className="hidden sm:inline">પ્લેલિસ્ટ</span>
+            </button>
+
+            <button
+              onClick={() => setIsPlayerVisible(!isPlayerVisible)}
+              title={isPlayerVisible ? "Disable Player Display" : "Enable Player Display"}
+              className={`p-2 sm:px-3 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-gujarati backdrop-blur-md ${
+                isPlayerVisible
+                  ? 'bg-orange-500/20 text-orange-300 border-orange-500/40 hover:bg-orange-500/30'
+                  : 'bg-black/40 text-slate-400 border-white/10 hover:text-slate-200'
+              }`}
+            >
+              {isPlayerVisible ? (
+                <>
+                  <Eye className="w-4 h-4 text-orange-400" />
+                  <span className="hidden sm:inline">પ્લેયર ચાલુ</span>
+                </>
+              ) : (
+                <>
+                  <EyeOff className="w-4 h-4 text-slate-400" />
+                  <span className="hidden sm:inline">પ્લેયર બંધ</span>
+                </>
+              )}
+            </button>
+
             <button
               onClick={() => setIsShortcutsOpen(true)}
               title="Keyboard Shortcuts"
@@ -155,8 +200,34 @@ export default function App() {
           onToggleShuffle={toggleShuffle}
           onCycleRepeat={cycleRepeatMode}
           onOpenShortcuts={() => setIsShortcutsOpen(true)}
+          isPlayerVisible={isPlayerVisible}
+          onTogglePlayerVisible={() => setIsPlayerVisible(!isPlayerVisible)}
         />
 
+        {/* Full Interactive Playlist TrackList Section */}
+        {isPlaylistOpen && (
+          <div ref={trackListRef} className="w-full max-w-7xl mx-auto px-4 my-6 z-30 animate-fadeIn relative">
+            <button
+              onClick={() => setIsPlaylistOpen(false)}
+              title="Close Playlist"
+              className="absolute top-2 right-6 sm:right-10 z-30 w-8 h-8 rounded-full bg-slate-900 border border-white/20 text-slate-300 hover:text-orange-400 flex items-center justify-center shadow-2xl transition-all hover:scale-110"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <TrackList
+              tracks={tracks}
+              currentTrackIndex={playerState.currentIndex}
+              isPlaying={playerState.isPlaying}
+              isLoading={playerState.isLoading}
+              favorites={favorites}
+              onSelectTrack={(index) => {
+                playVideoAt(index);
+              }}
+              onToggleFavorite={toggleFavorite}
+            />
+          </div>
+        )}
 
       </div>
 
@@ -174,7 +245,7 @@ export default function App() {
         onToggleShuffle={toggleShuffle}
         onCycleRepeat={cycleRepeatMode}
         onToggleFavorite={toggleFavorite}
-        onToggleTrackListDrawer={scrollToTrackList}
+        onToggleTrackListDrawer={togglePlaylist}
       />
 
       {/* Keyboard Shortcuts Helper Modal */}
