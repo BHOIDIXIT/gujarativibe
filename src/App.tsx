@@ -144,6 +144,28 @@ export default function App() {
           {/* Right Header Controls */}
           <div className="flex items-center gap-2.5">
             <button
+              onClick={() => setIsPlayerVisible(!isPlayerVisible)}
+              title={isPlayerVisible ? "Hide Player Card" : "Show Player Card"}
+              className={`p-2 sm:px-3 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-gujarati backdrop-blur-md ${
+                isPlayerVisible
+                  ? 'bg-orange-500/30 text-orange-200 border-orange-500/50 hover:bg-orange-500/40'
+                  : 'bg-black/40 text-slate-300 border-white/10 hover:text-white'
+              }`}
+            >
+              {isPlayerVisible ? (
+                <>
+                  <Eye className="w-4 h-4 text-orange-400" />
+                  <span className="hidden sm:inline">પ્લેયર ચાલુ</span>
+                </>
+              ) : (
+                <>
+                  <EyeOff className="w-4 h-4 text-slate-400" />
+                  <span className="hidden sm:inline">પ્લેયર બંધ</span>
+                </>
+              )}
+            </button>
+
+            <button
               onClick={togglePlaylist}
               title={isPlaylistOpen ? "Hide Playlist" : "Show Playlist"}
               className={`p-2 sm:px-3 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-gujarati backdrop-blur-md ${
@@ -168,7 +190,19 @@ export default function App() {
         </header>
 
         {/* Hero Banner Section */}
-        <HeroBanner currentTrack={currentTrack} />
+        <HeroBanner
+          currentTrack={currentTrack}
+          playerState={playerState}
+          onTogglePlayPause={togglePlayPause}
+          onNext={nextTrack}
+          onPrevious={previousTrack}
+          onSeek={seekTo}
+          onToggleShuffle={toggleShuffle}
+          onCycleRepeat={cycleRepeatMode}
+          onOpenShortcuts={() => setIsShortcutsOpen(true)}
+          isPlayerVisible={isPlayerVisible}
+          onTogglePlayerVisible={() => setIsPlayerVisible(!isPlayerVisible)}
+        />
 
         {/* Right Sidebar Playlist Drawer Panel */}
         {isPlaylistOpen && (
