@@ -11,7 +11,6 @@ import { TrackList } from './components/TrackList';
 import { Player } from './components/Player';
 import { KeyboardShortcutsModal } from './components/KeyboardShortcutsModal';
 import { LiveUserCounter } from './components/LiveUserCounter';
-import { playTruckHorn } from './utils/hornSound';
 import { Keyboard, Radio, Sparkles, Truck, ShieldAlert, Eye, EyeOff, ListMusic, X } from 'lucide-react';
 
 export default function App() {
@@ -84,10 +83,6 @@ export default function App() {
           e.preventDefault();
           toggleMute();
           break;
-        case 'KeyH':
-          e.preventDefault();
-          playTruckHorn('classic');
-          break;
         default:
           break;
       }
@@ -98,15 +93,8 @@ export default function App() {
   }, [togglePlayPause, seekTo, setVolume, toggleMute, playerState]);
 
   const togglePlaylist = () => {
-    setIsPlaylistOpen(prev => {
-      const nextState = !prev;
-      if (nextState) {
-        setTimeout(() => {
-          trackListRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      }
-      return nextState;
-    });
+    trackListRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setIsPlaylistOpen(prev => !prev);
   };
 
   return (
@@ -125,7 +113,7 @@ export default function App() {
       <div className="relative z-20 flex-1 flex flex-col items-center">
         
         {/* Top Header Navigation Bar */}
-        <header className="w-full max-w-7xl px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3 z-30">
+        <header className="w-full max-w-7xl px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-3 z-30">
           
           {/* Station Brand Logo */}
           <div className="flex items-center gap-2.5">
@@ -212,33 +200,19 @@ export default function App() {
 
         {/* Right Sidebar Playlist Drawer Panel */}
         {isPlaylistOpen && (
-          <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
+          <>
             {/* Backdrop Overlay */}
             <div 
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
               onClick={() => setIsPlaylistOpen(false)}
             />
 
             {/* Slide-out Right Sidebar Panel */}
             <div 
               ref={trackListRef}
-              className="relative w-full max-w-md sm:max-w-lg h-full bg-slate-950/95 backdrop-blur-2xl border-l border-white/15 shadow-2xl z-10 flex flex-col p-4 sm:p-5 overflow-hidden"
+              className="fixed top-0 right-0 bottom-[80px] sm:bottom-[92px] h-[calc(100vh-80px)] sm:h-[calc(100vh-92px)] w-full max-w-md sm:max-w-lg bg-slate-950/95 backdrop-blur-2xl border-l border-white/15 shadow-2xl z-50 flex flex-col p-4 sm:p-5 overflow-hidden"
             >
-              <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-orange-400 font-sans">
-                    પ્લેલિસ્ટ સાઇડબાર (Right Sidebar)
-                  </span>
-                </div>
-                <button
-                  onClick={() => setIsPlaylistOpen(false)}
-                  title="Close Playlist"
-                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-orange-500/30 border border-white/20 text-slate-200 hover:text-orange-400 flex items-center justify-center transition-all hover:scale-110 shrink-0"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+            
 
               <TrackList
                 tracks={tracks}
@@ -250,10 +224,11 @@ export default function App() {
                   playVideoAt(index);
                 }}
                 onToggleFavorite={toggleFavorite}
+                onClose={() => setIsPlaylistOpen(false)}
                 isSidebar
               />
             </div>
-          </div>
+          </>
         )}
 
       </div>

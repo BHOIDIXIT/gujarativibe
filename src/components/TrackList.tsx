@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Track } from '../types';
-import { Search, Heart, Play, Music, Sparkles, Volume2 } from 'lucide-react';
+import { Search, Heart, Play, Music, Sparkles, Volume2, X } from 'lucide-react';
 
 interface TrackListProps {
   tracks: Track[];
@@ -15,6 +15,7 @@ interface TrackListProps {
   favorites: string[];
   onSelectTrack: (index: number) => void;
   onToggleFavorite: (videoId: string) => void;
+  onClose?: () => void;
   isSidebar?: boolean;
 }
 
@@ -26,6 +27,7 @@ export const TrackList: React.FC<TrackListProps> = ({
   favorites,
   onSelectTrack,
   onToggleFavorite,
+  onClose,
   isSidebar = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,8 +54,8 @@ export const TrackList: React.FC<TrackListProps> = ({
   }, [tracks, searchQuery, activeTab, favorites]);
 
   return (
-    <div className={isSidebar ? "w-full flex-1 flex flex-col relative" : "w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 my-6 z-20 relative"}>
-      <div className={`w-full flex-1 flex flex-col bg-black/40 backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl ${isSidebar ? 'rounded-2xl p-4' : 'rounded-2xl p-4 sm:p-6'}`}>
+    <div className={isSidebar ? "w-full flex-1 flex flex-col relative overflow-hidden min-h-0" : "w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 my-6 z-20 relative"}>
+      <div className={`w-full flex-1 flex flex-col bg-black/40 backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl ${isSidebar ? 'rounded-2xl p-4 min-h-0' : 'rounded-2xl p-4 sm:p-6'}`}>
         
         {/* Header & Controls */}
         <div className="flex flex-col gap-3 pb-4 border-b border-white/10">
@@ -76,6 +78,17 @@ export const TrackList: React.FC<TrackListProps> = ({
                 </p>
               </div>
             </div>
+
+            {/* Right Close Button */}
+            {onClose && (
+              <button
+                onClick={onClose}
+                title="બંધ કરો (Close)"
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-orange-500/30 border border-white/20 text-slate-200 hover:text-orange-400 flex items-center justify-center transition-all hover:scale-110 shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {/* Filter Tabs & Search Box */}
@@ -121,7 +134,7 @@ export const TrackList: React.FC<TrackListProps> = ({
         </div>
 
         {/* Scrollable Track List */}
-        <div className={`mt-3 overflow-y-auto pr-1 space-y-1.5 ${isSidebar ? 'flex-1 max-h-[calc(100vh-220px)] min-h-[300px]' : 'max-h-[420px]'}`}>
+        <div className={`mt-3 overflow-y-auto pr-1 space-y-1.5 ${isSidebar ? 'flex-1 min-h-0' : 'max-h-[420px]'}`}>
             
             {/* Skeleton Loaders */}
             {isLoading && (

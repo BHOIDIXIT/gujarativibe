@@ -58,52 +58,56 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   };
 
   return (
-    <div className="relative z-20 w-full pt-4 pb-8 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
+    <div className="relative z-20 w-full flex-1 pt-2 pb-20 sm:pb-24 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto flex flex-col items-center justify-between text-center min-h-[75vh]">
       
-      {/* Live Status Pill */}
-      <div className="flex flex-wrap items-center justify-center gap-3 w-full max-w-4xl mb-4 sm:mb-6">
-        <div className="inline-flex items-center gap-3 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-xl max-w-full overflow-hidden">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0"></div>
-          <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-green-400 font-sans shrink-0">
-            ● હવે વાગે છે — મારો અવાજ
-          </span>
-          <span className="text-white/20 shrink-0">|</span>
-          <div className="overflow-hidden whitespace-nowrap relative flex-1 text-left min-w-[120px]">
-            {currentTrack ? (
-              <div className="animate-marquee inline-block font-semibold text-orange-200/90 font-gujarati text-xs">
-                <span className="mr-8">{currentTrack.title} — {currentTrack.artist}</span>
-                <span className="mr-8">{currentTrack.title} — {currentTrack.artist}</span>
-              </div>
-            ) : (
-              <span className="text-orange-200/70 font-gujarati text-xs">
-                ૧૦૮ FM · ગુજ્જુ સ્પેશિયલ રેડિયો
-              </span>
-            )}
+      {/* Top Header & Title Group */}
+      <div className="w-full flex flex-col items-center">
+        {/* Live Status Pill */}
+        <div className="flex flex-wrap items-center justify-center gap-3 w-full max-w-4xl mb-2 sm:mb-3">
+          <div className="inline-flex items-center gap-2.5 sm:gap-3 bg-black/50 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 shadow-xl max-w-full overflow-hidden">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0"></div>
+            <span className="text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.2em] uppercase text-green-400 font-sans shrink-0">
+              ● હવે વાગે છે — મારો અવાજ
+            </span>
+            <span className="text-white/20 shrink-0">|</span>
+            <div className="overflow-hidden whitespace-nowrap relative flex-1 text-left min-w-[100px] sm:min-w-[140px]">
+              {currentTrack ? (
+                <div className="animate-marquee inline-block font-semibold text-orange-200/90 font-gujarati text-xs">
+                  <span className="mr-8">{currentTrack.title} — {currentTrack.artist}</span>
+                  <span className="mr-8">{currentTrack.title} — {currentTrack.artist}</span>
+                </div>
+              ) : (
+                <span className="text-orange-200/70 font-gujarati text-xs">
+                  ૧૦૮ FM · ગુજ્જુ સ્પેશિયલ રેડિયો
+                </span>
+              )}
+            </div>
+            
           </div>
         </div>
+
+        {/* Main Center Display: Calligraphy Heading */}
+        <header className="relative z-10 flex flex-col items-center text-center my-2 sm:my-3 select-none">
+          
+          {/* Brush Calligraphy Title: "હું ગુજરાતી" */}
+          <div className="relative">
+            <h1
+              className="text-5xl mt-3 sm:text-6xl md:text-7xl lg:text-[7.5rem] font-bold text-[#F5F5DC] font-yatra tracking-tight leading-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
+              style={{ textShadow: '0 4px 30px rgba(255, 78, 0, 0.5)' }}
+            >
+              હું ગુજરાતી
+            </h1>
+            
+            {/* Subtle warm painted stroke accent under text */}
+            <div className="w-full h-1.5 sm:h-2 -mt-1 sm:-mt-2 bg-gradient-to-r from-transparent via-[#F5F5DC]/40 to-transparent rounded-full blur-[1px]" />
+          </div>
+        </header>
       </div>
 
-      {/* Main Center Display: Calligraphy Heading */}
-      <header className="relative z-10 flex flex-col items-center text-center my-4 sm:my-8 select-none">
-        
-        {/* Brush Calligraphy Title: "હું ગુજરાતી" */}
-        <div className="relative">
-          <h1
-            className="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] font-bold text-[#F5F5DC] font-yatra tracking-tight leading-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
-            style={{ textShadow: '0 4px 30px rgba(255, 78, 0, 0.5)' }}
-          >
-            હું ગુજરાતી
-          </h1>
-          
-          {/* Subtle warm painted stroke accent under text */}
-          <div className="w-full h-2 sm:h-3 -mt-2 sm:-mt-4 bg-gradient-to-r from-transparent via-[#F5F5DC]/40 to-transparent rounded-full blur-[1px]" />
-        </div>
-      </header>
-
-      {/* Floating Glassmorphic Audio Player */}
+      {/* Floating Glassmorphic Audio Player (Positioned above footer) */}
       {isVisible ? (
-        <div className="w-full max-w-xl sm:max-w-2xl mt-4 sm:mt-6 px-2 translate-y-2 transition-all duration-300">
-          <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-3.5 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-left flex flex-col sm:flex-row items-center gap-4 sm:gap-6 transition-all hover:bg-white/15 group">
+        <div className="w-full max-w-xl sm:max-w-2xl mt-auto mb-2 px-2 transition-all duration-300">
+          <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-3 sm:p-4 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-left flex flex-col sm:flex-row items-center gap-3 sm:gap-5 transition-all hover:bg-white/15 group">
             
             {/* Quick Hide Toggle Button on Card */}
             <button
@@ -115,7 +119,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             </button>
 
             {/* Thumbnail Image */}
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-black shrink-0 border border-white/20 shadow-lg">
+            <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-black shrink-0 border border-white/20 shadow-lg">
               {currentTrack ? (
                 <img
                   src={currentTrack.thumbnailUrl}
@@ -131,9 +135,9 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               )}
               {isPlaying && (
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center gap-1">
-                  <span className="w-1 bg-white eq-bar-1 rounded-t h-4" />
-                  <span className="w-1 bg-white eq-bar-2 rounded-t h-4" />
-                  <span className="w-1 bg-white eq-bar-3 rounded-t h-4" />
+                  <span className="w-1 bg-white eq-bar-1 rounded-t h-3.5" />
+                  <span className="w-1 bg-white eq-bar-2 rounded-t h-3.5" />
+                  <span className="w-1 bg-white eq-bar-3 rounded-t h-3.5" />
                 </div>
               )}
             </div>
@@ -237,7 +241,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
           </div>
         </div>
       ) : (
-        <div className="w-full max-w-xl sm:max-w-2xl mt-4 sm:mt-6 px-2 translate-y-2 flex justify-center animate-fadeIn">
+        <div className="w-full max-w-xl sm:max-w-2xl mt-auto mb-2 px-2 translate-y-2 flex justify-center animate-fadeIn">
           <button
             onClick={toggleVisibility}
             className="inline-flex items-center gap-2 bg-black/60 hover:bg-black/80 backdrop-blur-xl border border-orange-500/40 text-orange-300 hover:text-orange-100 px-5 py-2.5 rounded-2xl shadow-2xl font-gujarati text-sm transition-all hover:scale-105"

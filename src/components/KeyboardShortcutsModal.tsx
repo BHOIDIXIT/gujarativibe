@@ -21,7 +21,7 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
     { key: '← / →', desc: 'પાછળ / આગળ સીક કરો (Seek -/+ 5s)' },
     { key: '↑ / ↓', desc: 'અવાજ વધારો / ઘટાડો (Volume Up/Down)' },
     { key: 'M', desc: 'અવાજ બંધ કરો (Mute / Unmute)' },
-    { key: 'H', desc: '🔊 હૉર્ન વગાડો (Honk Truck Horn)' },
+
   ];
 
   return (

@@ -79,7 +79,7 @@ export const Player: React.FC<PlayerProps> = ({
   };
 
   return (
-    <footer className="fixed bottom-0 inset-x-0 z-40 bg-black/85 backdrop-blur-3xl border-t border-white/10 px-3 sm:px-6 py-2.5 sm:py-3.5 text-slate-100 shadow-[0_-10px_35px_rgba(0,0,0,0.9)]">
+    <footer className="fixed bottom-0 inset-x-0 z-50 bg-black/85 backdrop-blur-3xl border-t border-white/10 px-3 sm:px-6 py-2.5 sm:py-3.5 text-slate-100 shadow-[0_-10px_35px_rgba(0,0,0,0.9)]">
       
       {/* Top Seek Progress Bar (Slim Width Bar) */}
       <div className="relative group w-full mb-2 -mt-2 sm:-mt-3">
