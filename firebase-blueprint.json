@@ -1,0 +1,28 @@
+{
+  "entities": {
+    "Presence": {
+      "title": "Presence",
+      "description": "Live user presence and connection state",
+      "type": "object",
+      "properties": {
+        "online": {
+          "type": "boolean",
+          "description": "User connection status"
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when presence was last set"
+        }
+      },
+      "required": ["online", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/presence/{sessionId}": {
+      "schema": {
+        "$ref": "#/entities/Presence"
+      },
+      "description": "Collection of active user sessions"
+    }
+  }
+}

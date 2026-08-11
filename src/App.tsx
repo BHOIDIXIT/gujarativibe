@@ -10,6 +10,7 @@ import { HeroBanner } from './components/HeroBanner';
 import { TrackList } from './components/TrackList';
 import { Player } from './components/Player';
 import { KeyboardShortcutsModal } from './components/KeyboardShortcutsModal';
+import { LiveUserCounter } from './components/LiveUserCounter';
 import { playTruckHorn } from './utils/hornSound';
 import { Keyboard, Radio, Sparkles, Truck, ShieldAlert, Eye, EyeOff, ListMusic, X } from 'lucide-react';
 
@@ -124,7 +125,7 @@ export default function App() {
       <div className="relative z-20 flex-1 flex flex-col items-center">
         
         {/* Top Header Navigation Bar */}
-        <header className="w-full max-w-7xl px-4 sm:px-6 py-4 flex items-center justify-between z-30">
+        <header className="w-full max-w-7xl px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3 z-30">
           
           {/* Station Brand Logo */}
           <div className="flex items-center gap-2.5">
@@ -139,6 +140,11 @@ export default function App() {
                 {currentTimeString || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             </div>
+          </div>
+
+          {/* Live Listener Counter Badge in Header */}
+          <div className="flex items-center justify-center">
+            <LiveUserCounter />
           </div>
 
           {/* Right Header Controls */}

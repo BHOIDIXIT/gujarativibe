@@ -61,7 +61,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
     <div className="relative z-20 w-full pt-4 pb-8 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
       
       {/* Live Status Pill */}
-      <div className="flex items-center justify-center w-full max-w-3xl mb-4 sm:mb-6">
+      <div className="flex flex-wrap items-center justify-center gap-3 w-full max-w-4xl mb-4 sm:mb-6">
         <div className="inline-flex items-center gap-3 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-xl max-w-full overflow-hidden">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0"></div>
           <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-green-400 font-sans shrink-0">
