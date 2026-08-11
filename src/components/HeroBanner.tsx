@@ -5,13 +5,19 @@
 
 import React from 'react';
 import { Track, PlayerState } from '../types';
+import { formatTime } from './Player';
 import { HornButton } from './HornButton';
-import { Play, Pause, Radio, Sparkles, Music2 } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Shuffle, Repeat, Repeat1, Radio } from 'lucide-react';
 
 interface HeroBannerProps {
   currentTrack: Track | null;
   playerState: PlayerState;
   onTogglePlayPause: () => void;
+  onNext?: () => void;
+  onPrevious?: () => void;
+  onSeek?: (seconds: number) => void;
+  onToggleShuffle?: () => void;
+  onCycleRepeat?: () => void;
   onOpenShortcuts?: () => void;
 }
 
@@ -19,19 +25,41 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   currentTrack,
   playerState,
   onTogglePlayPause,
+  onNext,
+  onPrevious,
+  onSeek,
+  onToggleShuffle,
+  onCycleRepeat,
   onOpenShortcuts,
 }) => {
-  const { isPlaying, isLoading } = playerState;
+  const {
+    isPlaying,
+    isLoading,
+    currentTime,
+    duration,
+    isShuffle,
+    repeatMode,
+    isBuffering,
+  } = playerState;
+
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!onSeek) return;
+    const newPercent = parseFloat(e.target.value);
+    const newTime = (newPercent / 100) * duration;
+    onSeek(newTime);
+  };
 
   return (
-    <div className="relative z-20 w-full pt-8 pb-6 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
+    <div className="relative z-20 w-full pt-4 pb-8 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
       
-      {/* Live Status Pill - Bold Typography Theme */}
-      <div className="flex items-center justify-between w-full max-w-3xl mb-4 sm:mb-6">
-        <div className="inline-flex items-center gap-3 bg-black/30 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-xl max-w-full overflow-hidden">
+      {/* Live Status Pill */}
+      <div className="flex items-center justify-center w-full max-w-3xl mb-4 sm:mb-6">
+        <div className="inline-flex items-center gap-3 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-xl max-w-full overflow-hidden">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0"></div>
           <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-green-400 font-sans shrink-0">
-            ● હવે વાગે છે — મારો ટ્રક મારો અવાજ
+            ● હવે વાગે છે — મારો અવાજ
           </span>
           <span className="text-white/20 shrink-0">|</span>
           <div className="overflow-hidden whitespace-nowrap relative flex-1 text-left min-w-[120px]">
@@ -42,72 +70,157 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               </div>
             ) : (
               <span className="text-orange-200/70 font-gujarati text-xs">
-                ૧૦૮ FM · ગુજ્જુ હાઇવે સ્પેશિયલ રેડિયો
+                ૧૦૮ FM · ગુજ્જુ સ્પેશિયલ રેડિયો
               </span>
             )}
           </div>
         </div>
+      </div>
 
-        {/* Right Action: Horn Button */}
-        <div className="hidden sm:block shrink-0">
-          <HornButton variant="inline" />
+      {/* Main Center Display: Calligraphy Heading */}
+      <header className="relative z-10 flex flex-col items-center text-center my-4 sm:my-8 select-none">
+        
+        {/* Brush Calligraphy Title: "હું ગુજરાતી" */}
+        <div className="relative">
+          <h1
+            className="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] font-bold text-[#F5F5DC] font-yatra tracking-tight leading-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
+            style={{ textShadow: '0 4px 30px rgba(255, 78, 0, 0.5)' }}
+          >
+            હું ગુજરાતી
+          </h1>
+          
+          {/* Subtle warm painted stroke accent under text */}
+          <div className="w-full h-2 sm:h-3 -mt-2 sm:-mt-4 bg-gradient-to-r from-transparent via-[#F5F5DC]/40 to-transparent rounded-full blur-[1px]" />
+        </div>
+      </header>
+
+      {/* Floating Glassmorphic Audio Player (Embedded directly over River Landscape - Exactly like screenshot) */}
+      <div className="w-full max-w-xl sm:max-w-2xl mt-4 sm:mt-6 px-2">
+        <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-3.5 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-left flex flex-col sm:flex-row items-center gap-4 sm:gap-6 transition-all hover:bg-white/15">
+          
+          {/* Thumbnail Image */}
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-black shrink-0 border border-white/20 shadow-lg">
+            {currentTrack ? (
+              <img
+                src={currentTrack.thumbnailUrl}
+                alt={currentTrack.title}
+                className={`w-full h-full object-cover transition-transform duration-700 ${
+                  isPlaying ? 'scale-105' : 'scale-100'
+                }`}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-orange-400 text-xs font-gujarati">
+                સંગીત
+              </div>
+            )}
+            {isPlaying && (
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center gap-1">
+                <span className="w-1 bg-white eq-bar-1 rounded-t h-4" />
+                <span className="w-1 bg-white eq-bar-2 rounded-t h-4" />
+                <span className="w-1 bg-white eq-bar-3 rounded-t h-4" />
+              </div>
+            )}
+          </div>
+
+          {/* Track Details & Seek Bar */}
+          <div className="flex-1 min-w-0 w-full">
+            <h3 className="text-sm sm:text-base font-bold text-white font-gujarati truncate leading-snug">
+              {currentTrack ? currentTrack.title : 'કેસરીયો રંગ તારો'}
+            </h3>
+            <p className="text-xs text-orange-200/80 font-gujarati truncate mt-0.5">
+              {currentTrack ? currentTrack.artist : 'ગુજરાતી લોક ગીત'}
+            </p>
+
+            {/* Time readout */}
+            <div className="text-[11px] font-mono opacity-80 text-orange-100 mt-1">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </div>
+
+            {/* Seek bar */}
+            <div className="relative group w-full mt-2">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="0.1"
+                value={progressPercent || 0}
+                onChange={handleSeekChange}
+                className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-white hover:h-1.5 transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Media Control Buttons */}
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            
+            {/* Shuffle */}
+            {onToggleShuffle && (
+              <button
+                onClick={onToggleShuffle}
+                title="Shuffle"
+                className={`p-2 rounded-full transition-colors ${
+                  isShuffle ? 'text-orange-400 bg-white/10' : 'text-white/70 hover:text-white'
+                }`}
+              >
+                <Shuffle className="w-4 h-4" />
+              </button>
+            )}
+
+            {/* Previous */}
+            {onPrevious && (
+              <button
+                onClick={onPrevious}
+                title="Previous"
+                className="p-2 text-white/80 hover:text-white active:scale-90 transition-transform"
+              >
+                <SkipBack className="w-5 h-5 fill-current" />
+              </button>
+            )}
+
+            {/* Main Solid White Circular Play/Pause Button */}
+            <button
+              onClick={onTogglePlayPause}
+              disabled={isLoading}
+              title={isPlaying ? 'Pause' : 'Play'}
+              className="w-12 h-12 rounded-full bg-white text-slate-950 flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all"
+            >
+              {isBuffering || isLoading ? (
+                <div className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+              ) : isPlaying ? (
+                <Pause className="w-5 h-5 fill-current" />
+              ) : (
+                <Play className="w-5 h-5 fill-current ml-0.5" />
+              )}
+            </button>
+
+            {/* Next */}
+            {onNext && (
+              <button
+                onClick={onNext}
+                title="Next"
+                className="p-2 text-white/80 hover:text-white active:scale-90 transition-transform"
+              >
+                <SkipForward className="w-5 h-5 fill-current" />
+              </button>
+            )}
+
+            {/* Repeat */}
+            {onCycleRepeat && (
+              <button
+                onClick={onCycleRepeat}
+                title="Repeat"
+                className={`p-2 rounded-full transition-colors ${
+                  repeatMode !== 'off' ? 'text-orange-400 bg-white/10' : 'text-white/70 hover:text-white'
+                }`}
+              >
+                {repeatMode === 'one' ? <Repeat1 className="w-4 h-4" /> : <Repeat className="w-4 h-4" />}
+              </button>
+            )}
+          </div>
+
         </div>
       </div>
 
-      {/* Main Center Display: Bold Typography Heading & Tagline */}
-      <header className="relative z-10 flex flex-col items-center text-center my-2 sm:my-4">
-        {/* Decorative badge */}
-        <div className="flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs font-bold tracking-wider uppercase font-sans">
-          <Radio className="w-3.5 h-3.5 text-orange-400 animate-pulse" />
-          <span>ગુજરાતી દેશી અને અર્બન મ્યુઝિક</span>
-        </div>
-
-        {/* Huge Bold Title */}
-        <h1
-          className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-1 drop-shadow-2xl text-[#F5F5DC] font-yatra leading-tight select-none"
-          style={{ letterSpacing: '-2px' }}
-        >
-          ગુજ્જુ ટ્રક રેડિયો
-        </h1>
-
-        {/* Serif Tagline */}
-        <p
-          className="text-lg sm:text-2xl font-medium text-amber-100/90 italic tracking-widest font-rozha mt-1 drop-shadow"
-        >
-          આપણી ઓળખ, આપણું સંગીત
-        </p>
-
-        {/* Sub-slogan */}
-        <p className="mt-2 text-xs sm:text-sm font-gujarati text-orange-200/70 max-w-lg">
-          ગરબા, લોકગીતો, કચ્છી ધૂન અને સુપરહીટ ગીતોનો અવિરત પ્રવાહ 🚚💨
-        </p>
-
-        {/* Primary Call To Action Buttons */}
-        <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-4">
-          <button
-            onClick={onTogglePlayPause}
-            disabled={isLoading}
-            id="btn-hero-play-main"
-            className="flex items-center gap-3 px-7 sm:px-9 py-3.5 sm:py-4 rounded-full bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-slate-950 font-extrabold text-base sm:text-lg shadow-xl shadow-orange-600/40 hover:shadow-orange-500/60 hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20 font-gujarati"
-          >
-            {isLoading ? (
-              <div className="w-6 h-6 border-3 border-slate-950 border-t-transparent rounded-full animate-spin" />
-            ) : isPlaying ? (
-              <>
-                <Pause className="w-6 h-6 fill-current" />
-                <span>સંગીત થોભાવો (Pause)</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-6 h-6 fill-current ml-0.5" />
-                <span>સંગીત શરૂ કરો (Play)</span>
-              </>
-            )}
-          </button>
-
-          <HornButton variant="hero" />
-        </div>
-      </header>
     </div>
   );
 };

@@ -32,7 +32,20 @@ export default function App() {
   } = useYouTubePlayer();
 
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+  const [currentTimeString, setCurrentTimeString] = useState<string>('');
   const trackListRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTimeString(
+        now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      );
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Keyboard shortcut listener
   useEffect(() => {
@@ -105,15 +118,15 @@ export default function App() {
           
           {/* Station Brand Logo */}
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-orange-500/30 border border-white/20">
-              <Truck className="w-5 h-5 text-slate-950" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-slate-950 font-black text-sm tracking-tighter shadow-lg shadow-orange-500/30 border border-white/20 select-none">
+              GV
             </div>
             <div>
               <span className="font-yatra text-base sm:text-lg font-bold text-[#F5F5DC] tracking-wide">
-                ગુજ્જુ ટ્રક રેડિયો
+                Gujarati Vibe
               </span>
-              <span className="hidden sm:inline-block ml-2 text-[10px] px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 font-sans border border-orange-500/30">
-                108.4 FM
+              <span className="hidden sm:inline-block ml-2 text-[10px] px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 font-mono border border-orange-500/30">
+                {currentTimeString || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             </div>
           </div>
@@ -136,40 +149,15 @@ export default function App() {
           currentTrack={currentTrack}
           playerState={playerState}
           onTogglePlayPause={togglePlayPause}
+          onNext={nextTrack}
+          onPrevious={previousTrack}
+          onSeek={seekTo}
+          onToggleShuffle={toggleShuffle}
+          onCycleRepeat={cycleRepeatMode}
           onOpenShortcuts={() => setIsShortcutsOpen(true)}
         />
 
-        {/* Scroll Anchor & Track List Section */}
-        <div ref={trackListRef} className="w-full">
-          <TrackList
-            tracks={tracks}
-            currentTrackIndex={playerState.currentIndex}
-            isPlaying={playerState.isPlaying}
-            isLoading={playerState.isLoading}
-            favorites={favorites}
-            onSelectTrack={playVideoAt}
-            onToggleFavorite={toggleFavorite}
-          />
-        </div>
 
-        {/* Trucker Culture Fun Footer Badges */}
-        <div className="w-full max-w-4xl px-4 my-8 text-center space-y-3 z-20">
-          <div className="inline-flex flex-wrap items-center justify-center gap-3 p-3 rounded-2xl bg-slate-900/60 backdrop-blur-md border border-slate-800/80 text-xs text-amber-200/80">
-            <span className="flex items-center gap-1 font-bold text-amber-400">
-              <ShieldAlert className="w-4 h-4 text-amber-500" />
-              ટ્રક સ્પેશિયલ સુવિચારો:
-            </span>
-            <span>"હસતો રહે કાન્હા, દુનિયા તો જળ્યા કરશે"</span>
-            <span>•</span>
-            <span>"ઓકે ટાટા, બાય બાય"</span>
-            <span>•</span>
-            <span>"માતાજી ની દયા"</span>
-          </div>
-
-          <p className="text-xs text-slate-500 font-sans">
-            © {new Date().getFullYear()} ગુજ્જુ ટ્રક રેડિયો | Powered by YouTube Music Playlist & Web Audio API
-          </p>
-        </div>
       </div>
 
       {/* Fixed Bottom Mini Player */}
