@@ -1,0 +1,6 @@
+{
+  "name": "ગુજ્જુ ટ્રક રેડિયો",
+  "description": "Gujju Truck Radio - Gujarati cultural music streaming web app with truck art aesthetics",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

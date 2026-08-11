@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-gujarati {
+    font-family: 'Anek Gujarati', sans-serif;
+  }
+  .font-gujarati-heading {
+    font-family: 'Baloo Bhai 2', cursive, sans-serif;
+  }
+  .font-yatra {
+    font-family: 'Yatra One', 'Rozha One', serif, cursive;
+  }
+  .font-rozha {
+    font-family: 'Rozha One', 'Baloo Bhai 2', serif;
+  }
+  .font-bold-serif {
+    font-family: 'Rozha One', 'Yatra One', Georgia, serif;
+    letter-spacing: -2px;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(10, 25, 47, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 78, 0, 0.5);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 78, 0, 0.8);
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 18s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Lantern Glow animation */
+@keyframes lanternPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 15px rgba(255, 78, 0, 0.75)) drop-shadow(0 0 35px rgba(255, 140, 0, 0.5));
+    opacity: 0.95;
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(255, 78, 0, 0.95)) drop-shadow(0 0 55px rgba(255, 140, 0, 0.8));
+    opacity: 1;
+  }
+}
+
+.lantern-glow {
+  animation: lanternPulse 3s ease-in-out infinite;
+}
+
+/* Equalizer bar animation */
+@keyframes barBounce {
+  0%, 100% { height: 4px; }
+  50% { height: 18px; }
+}
+
+.eq-bar-1 { animation: barBounce 0.8s ease-in-out infinite 0.1s; }
+.eq-bar-2 { animation: barBounce 0.6s ease-in-out infinite 0.3s; }
+.eq-bar-3 { animation: barBounce 0.9s ease-in-out infinite 0.2s; }
+.eq-bar-4 { animation: barBounce 0.7s ease-in-out infinite 0.4s; }
+
+/* Subtle noise texture background overlay */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+
