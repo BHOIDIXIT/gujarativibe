@@ -33,7 +33,7 @@ export default function App() {
 
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isPlayerVisible, setIsPlayerVisible] = useState(true);
-  const [isPlaylistOpen, setIsPlaylistOpen] = useState(true);
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false);
   const [currentTimeString, setCurrentTimeString] = useState<string>('');
   const trackListRef = useRef<HTMLDivElement>(null);
 
@@ -157,28 +157,6 @@ export default function App() {
             </button>
 
             <button
-              onClick={() => setIsPlayerVisible(!isPlayerVisible)}
-              title={isPlayerVisible ? "Disable Player Display" : "Enable Player Display"}
-              className={`p-2 sm:px-3 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-gujarati backdrop-blur-md ${
-                isPlayerVisible
-                  ? 'bg-orange-500/20 text-orange-300 border-orange-500/40 hover:bg-orange-500/30'
-                  : 'bg-black/40 text-slate-400 border-white/10 hover:text-slate-200'
-              }`}
-            >
-              {isPlayerVisible ? (
-                <>
-                  <Eye className="w-4 h-4 text-orange-400" />
-                  <span className="hidden sm:inline">પ્લેયર ચાલુ</span>
-                </>
-              ) : (
-                <>
-                  <EyeOff className="w-4 h-4 text-slate-400" />
-                  <span className="hidden sm:inline">પ્લેયર બંધ</span>
-                </>
-              )}
-            </button>
-
-            <button
               onClick={() => setIsShortcutsOpen(true)}
               title="Keyboard Shortcuts"
               className="p-2 rounded-xl bg-black/40 hover:bg-black/60 text-slate-200 hover:text-orange-300 border border-white/10 transition-colors flex items-center gap-1.5 text-xs font-gujarati backdrop-blur-md"
@@ -190,42 +168,51 @@ export default function App() {
         </header>
 
         {/* Hero Banner Section */}
-        <HeroBanner
-          currentTrack={currentTrack}
-          playerState={playerState}
-          onTogglePlayPause={togglePlayPause}
-          onNext={nextTrack}
-          onPrevious={previousTrack}
-          onSeek={seekTo}
-          onToggleShuffle={toggleShuffle}
-          onCycleRepeat={cycleRepeatMode}
-          onOpenShortcuts={() => setIsShortcutsOpen(true)}
-          isPlayerVisible={isPlayerVisible}
-          onTogglePlayerVisible={() => setIsPlayerVisible(!isPlayerVisible)}
-        />
+        <HeroBanner currentTrack={currentTrack} />
 
-        {/* Full Interactive Playlist TrackList Section */}
+        {/* Right Sidebar Playlist Drawer Panel */}
         {isPlaylistOpen && (
-          <div ref={trackListRef} className="w-full max-w-7xl mx-auto px-4 my-6 z-30 animate-fadeIn relative">
-            <button
+          <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
+            {/* Backdrop Overlay */}
+            <div 
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
               onClick={() => setIsPlaylistOpen(false)}
-              title="Close Playlist"
-              className="absolute top-2 right-6 sm:right-10 z-30 w-8 h-8 rounded-full bg-slate-900 border border-white/20 text-slate-300 hover:text-orange-400 flex items-center justify-center shadow-2xl transition-all hover:scale-110"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            <TrackList
-              tracks={tracks}
-              currentTrackIndex={playerState.currentIndex}
-              isPlaying={playerState.isPlaying}
-              isLoading={playerState.isLoading}
-              favorites={favorites}
-              onSelectTrack={(index) => {
-                playVideoAt(index);
-              }}
-              onToggleFavorite={toggleFavorite}
             />
+
+            {/* Slide-out Right Sidebar Panel */}
+            <div 
+              ref={trackListRef}
+              className="relative w-full max-w-md sm:max-w-lg h-full bg-slate-950/95 backdrop-blur-2xl border-l border-white/15 shadow-2xl z-10 flex flex-col p-4 sm:p-5 overflow-hidden"
+            >
+              <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-orange-400 font-sans">
+                    પ્લેલિસ્ટ સાઇડબાર (Right Sidebar)
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsPlaylistOpen(false)}
+                  title="Close Playlist"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-orange-500/30 border border-white/20 text-slate-200 hover:text-orange-400 flex items-center justify-center transition-all hover:scale-110 shrink-0"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <TrackList
+                tracks={tracks}
+                currentTrackIndex={playerState.currentIndex}
+                isPlaying={playerState.isPlaying}
+                isLoading={playerState.isLoading}
+                favorites={favorites}
+                onSelectTrack={(index) => {
+                  playVideoAt(index);
+                }}
+                onToggleFavorite={toggleFavorite}
+                isSidebar
+              />
+            </div>
           </div>
         )}
 

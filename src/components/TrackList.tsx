@@ -15,6 +15,7 @@ interface TrackListProps {
   favorites: string[];
   onSelectTrack: (index: number) => void;
   onToggleFavorite: (videoId: string) => void;
+  isSidebar?: boolean;
 }
 
 export const TrackList: React.FC<TrackListProps> = ({
@@ -25,6 +26,7 @@ export const TrackList: React.FC<TrackListProps> = ({
   favorites,
   onSelectTrack,
   onToggleFavorite,
+  isSidebar = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'favorites'>('all');
@@ -50,76 +52,76 @@ export const TrackList: React.FC<TrackListProps> = ({
   }, [tracks, searchQuery, activeTab, favorites]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 my-6 z-20 relative">
-      <div className="w-full flex flex-col bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl p-4 sm:p-6">
+    <div className={isSidebar ? "w-full flex-1 flex flex-col relative" : "w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 my-6 z-20 relative"}>
+      <div className={`w-full flex-1 flex flex-col bg-black/40 backdrop-blur-xl border border-white/10 overflow-hidden shadow-2xl ${isSidebar ? 'rounded-2xl p-4' : 'rounded-2xl p-4 sm:p-6'}`}>
         
         {/* Header & Controls */}
+        <div className="flex flex-col gap-3 pb-4 border-b border-white/10">
           
-          {/* Header & Controls */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
-            
-            {/* Title & Badge */}
+          {/* Title & Badge */}
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 font-bold shadow-md">
-                <Music className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 font-bold shadow-md shrink-0">
+                <Music className="w-4 h-4" />
               </div>
               <div>
                 <h3 className="text-sm font-bold uppercase tracking-wider text-orange-400 font-sans flex items-center gap-2">
                   <span>પ્લેલિસ્ટ (Playlist)</span>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 font-sans border border-orange-500/30">
-                    {tracks.length} Tracks
+                    {tracks.length}
                   </span>
                 </h3>
-                <p className="text-xs text-slate-300/80 font-gujarati">
-                  ગરબા, લોકગીતો અને દેશી સંગીત સ્પેશિયલ
+                <p className="text-[11px] text-slate-300/80 font-gujarati">
+                  ગરબા, લોકગીતો અને દેશી સંગીત
                 </p>
-              </div>
-            </div>
-
-            {/* Filter Tabs & Search Box */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              
-              {/* Tabs */}
-              <div className="flex bg-black/50 p-1 rounded-xl border border-white/10 font-gujarati text-xs">
-                <button
-                  onClick={() => setActiveTab('all')}
-                  className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
-                    activeTab === 'all'
-                      ? 'bg-orange-500 text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  બધા ({tracks.length})
-                </button>
-                <button
-                  onClick={() => setActiveTab('favorites')}
-                  className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 ${
-                    activeTab === 'favorites'
-                      ? 'bg-red-600 text-white shadow-md'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <Heart className="w-3.5 h-3.5 fill-current" />
-                  <span>પસંદગીના ({favorites.length})</span>
-                </button>
-              </div>
-
-              {/* Search Input */}
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="શોધો (Search)..."
-                  className="w-full sm:w-40 md:w-48 pl-9 pr-3 py-1.5 text-xs bg-black/60 border border-white/10 focus:border-orange-500 text-slate-100 rounded-xl outline-none transition-all placeholder:text-slate-500 font-gujarati"
-                />
               </div>
             </div>
           </div>
 
-          {/* Scrollable Track List */}
-          <div className="mt-4 max-h-[420px] overflow-y-auto pr-1 space-y-1.5">
+          {/* Filter Tabs & Search Box */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+            
+            {/* Tabs */}
+            <div className="flex bg-black/50 p-1 rounded-xl border border-white/10 font-gujarati text-xs shrink-0">
+              <button
+                onClick={() => setActiveTab('all')}
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+                  activeTab === 'all'
+                    ? 'bg-orange-500 text-slate-950 shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                બધા ({tracks.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('favorites')}
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 ${
+                  activeTab === 'favorites'
+                    ? 'bg-red-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Heart className="w-3.5 h-3.5 fill-current" />
+                <span>પસંદગીના ({favorites.length})</span>
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="શોધો (Search)..."
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-black/60 border border-white/10 focus:border-orange-500 text-slate-100 rounded-xl outline-none transition-all placeholder:text-slate-500 font-gujarati"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Scrollable Track List */}
+        <div className={`mt-3 overflow-y-auto pr-1 space-y-1.5 ${isSidebar ? 'flex-1 max-h-[calc(100vh-220px)] min-h-[300px]' : 'max-h-[420px]'}`}>
             
             {/* Skeleton Loaders */}
             {isLoading && (
