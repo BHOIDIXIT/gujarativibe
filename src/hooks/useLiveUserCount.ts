@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ref, onValue, set, onDisconnect } from 'firebase/database';
-import { db } from '../lib/firebase';
+import { collection, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { firestore } from '../lib/firebase';
 
 export interface UseLiveUserCountResult {
   count: number;
@@ -21,73 +21,66 @@ export function useLiveUserCount(): UseLiveUserCountResult {
   }, []);
 
   useEffect(() => {
-    if (!db) {
+    if (!firestore) {
       setIsConnected(false);
       return;
     }
 
-    let myPresenceRef: ReturnType<typeof ref> | null = null;
+    const docRef = doc(firestore, 'presence', sessionId);
 
-    // 1. Listen for connection status
-    const connectedRef = ref(db, '.info/connected');
-    const unsubscribeConnected = onValue(
-      connectedRef,
-      (snap) => {
-        if (snap.val() === true) {
-          myPresenceRef = ref(db, `presence/${sessionId}`);
-          
-          // Setup onDisconnect handler to auto-remove on disconnect/tab close
-          onDisconnect(myPresenceRef)
-            .remove()
-            .then(() => {
-              if (myPresenceRef) {
-                return set(myPresenceRef, {
-                  online: true,
-                  timestamp: Date.now()
-                });
-              }
-            })
-            .catch((err) => {
-              console.warn('Failed to set onDisconnect/presence:', err);
-            });
-
-          setIsConnected(true);
-        } else {
-          setIsConnected(false);
-        }
-      },
-      (error) => {
-        console.warn('Firebase connection check error:', error);
+    // 1. Set online status
+    const updatePresence = async () => {
+      try {
+        await setDoc(docRef, {
+          online: true,
+          timestamp: Date.now()
+        });
+        setIsConnected(true);
+      } catch (err) {
+        console.warn('Failed to set presence in Firestore:', err);
         setIsConnected(false);
       }
-    );
+    };
 
-    // 2. Listen to presence count changes
-    const presenceRef = ref(db, 'presence');
-    const unsubscribePresence = onValue(
-      presenceRef,
+    updatePresence();
+
+    // Heartbeat every 30 seconds
+    const intervalId = setInterval(updatePresence, 30000);
+
+    // 2. Listen to presence collection
+    const presenceCol = collection(firestore, 'presence');
+    const unsubscribe = onSnapshot(
+      presenceCol,
       (snapshot) => {
-        if (snapshot.exists()) {
-          const val = snapshot.val();
-          const activeCount = val ? Object.keys(val).length : 0;
-          setCount(BASE_COUNT + activeCount);
-        } else {
-          setCount(BASE_COUNT);
-        }
+        const now = Date.now();
+        let activeCount = 0;
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (data && data.online && data.timestamp && now - data.timestamp < 120000) {
+            activeCount++;
+          }
+        });
+        setCount(BASE_COUNT + (activeCount > 0 ? activeCount : 1));
+        setIsConnected(true);
       },
       (error) => {
-        console.warn('Firebase presence listener error:', error);
+        console.warn('Firestore presence snapshot error:', error);
         setIsConnected(false);
-        setCount(BASE_COUNT);
       }
     );
+
+    // Clean up on unmount / tab close
+    const handleUnload = () => {
+      deleteDoc(docRef).catch(() => {});
+    };
+
+    window.addEventListener('beforeunload', handleUnload);
 
     return () => {
-      unsubscribeConnected();
-      unsubscribePresence();
-      if (myPresenceRef) {
-        set(myPresenceRef, null).catch(() => {});
-      }
+      clearInterval(intervalId);
+      window.removeEventListener('beforeunload', handleUnload);
+      deleteDoc(docRef).catch(() => {});
+      unsubscribe();
     };
   }, [sessionId]);
 

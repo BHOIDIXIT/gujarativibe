@@ -1,5 +1,4 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getDatabase, Database } from 'firebase/database';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
 import firebaseAppletConfig from '../../firebase-applet-config.json';
@@ -24,7 +23,6 @@ const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID || rawConfig.projectI
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || rawConfig.apiKey || 'demo-api-key',
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || rawConfig.authDomain || `${projectId}.firebaseapp.com`,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || `https://${projectId}-default-rtdb.firebaseio.com`,
   projectId: projectId,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || rawConfig.storageBucket || `${projectId}.appspot.com`,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || rawConfig.messagingSenderId || '1234567890',
@@ -32,13 +30,11 @@ const firebaseConfig = {
 };
 
 let app: FirebaseApp | null = null;
-let db: Database | null = null;
 let firestore: Firestore | null = null;
 let auth: Auth | null = null;
 
 try {
   app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-  db = getDatabase(app);
   firestore = rawConfig.firestoreDatabaseId
     ? getFirestore(app, rawConfig.firestoreDatabaseId)
     : getFirestore(app);
@@ -47,4 +43,5 @@ try {
   console.warn('Firebase failed to initialize:', error);
 }
 
-export { app, db, firestore, auth };
+export { app, firestore, auth };
+
