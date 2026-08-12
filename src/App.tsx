@@ -11,8 +11,7 @@ import { TrackList } from './components/TrackList';
 import { Player } from './components/Player';
 import { KeyboardShortcutsModal } from './components/KeyboardShortcutsModal';
 import { LiveUserCounter } from './components/LiveUserCounter';
-import { Keyboard, Radio, Sparkles, Truck, ShieldAlert, Eye, EyeOff, ListMusic, X } from 'lucide-react';
-
+import { Keyboard, Radio, Sparkles, Truck, ShieldAlert, Eye, EyeOff, ListMusic, X, Youtube } from 'lucide-react';
 export default function App() {
   const {
     tracks,
@@ -172,14 +171,16 @@ export default function App() {
               <span className="hidden sm:inline">પ્લેલિસ્ટ</span>
             </button>
 
-            <button
-              onClick={() => setIsShortcutsOpen(true)}
-              title="Keyboard Shortcuts"
-              className="p-2 rounded-xl bg-black/40 hover:bg-black/60 text-slate-200 hover:text-orange-300 border border-white/10 transition-colors flex items-center gap-1.5 text-xs font-gujarati backdrop-blur-md"
+            <a
+              href="https://music.youtube.com/playlist?list=PLYXh3YOOErgs&si=a5MvutU3n_HsRy4A"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="YouTube Music પ્લેલિસ્ટ ખોલો (YT Music)"
+              className="p-2 sm:px-3 sm:py-2 rounded-xl bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 flex items-center gap-1.5 transition-all text-xs font-gujarati backdrop-blur-md hover:scale-105 active:scale-95 shadow-lg shadow-red-950/20"
             >
-              <Keyboard className="w-4 h-4 text-orange-400" />
-              <span className="hidden sm:inline">કીબોર્ડ મદદ</span>
-            </button>
+              <Youtube className="w-4 h-4 text-red-500" />
+              <span className="hidden sm:inline font-semibold">YT Music</span>
+            </a>
           </div>
         </header>
 
